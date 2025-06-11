@@ -1,0 +1,35 @@
+/* TypeWriter Component Styles */
+.typewriter-text {
+  position: relative;
+}
+
+.typewriter-text-completed {
+  opacity: 0;
+  animation: fade-in 0.5s ease-out forwards;
+}
+
+.typewriter-text-current {
+  display: inline-block;
+}
+
+/* Style for better handling cursor animation */
+.typing-cursor-enhanced {
+  display: inline-block;
+  width: 2px;
+  height: 1.2em;
+  margin-left: 2px;
+  background-color: #3b82f6;
+  animation: blink 1s step-end infinite;
+  vertical-align: middle;
+}
+
+/* Prevent layout shifts during typing */
+.typewriter-container {
+  min-height: 1.5em;
+}
+
+/* Ensure smooth transitions between paragraphs */
+.typewriter-paragraph {
+  margin-bottom: 1rem;
+  transition: opacity 0.3s ease;
+}

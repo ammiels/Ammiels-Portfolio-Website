@@ -1,37 +1,70 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaGithub, FaLinkedin, FaEnvelope, FaChevronDown, FaArrowRight } from 'react-icons/fa';
 import TypeWriter from '../components/TypeWriter';
 
 const Home = () => {
+  useEffect(() => {
+    // Add a scroll-triggered animation class to elements
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('animate-fade-in');
+        }
+      });
+    }, { threshold: 0.1 });
+    
+    // Observe all elements with the 'scroll-animation' class
+    document.querySelectorAll('.scroll-animation').forEach((element) => {
+      observer.observe(element);
+    });
+    
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+  
   const scrollToSection = () => {
     const section = document.getElementById('about-preview');
     section?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
-    <div className="min-h-screen bg-dark-900">
-      {/* Hero Section */}
+    <div className="min-h-screen bg-dark-900">      {/* Hero Section */}
       <section className="min-h-screen flex flex-col justify-center items-center relative overflow-hidden">
-        {/* Background Elements */}
-        <div className="absolute inset-0 overflow-hidden">
-          <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary-500/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-secondary-500/20 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-gradient-to-r from-primary-500/10 to-secondary-500/10 rounded-full blur-3xl animate-float"></div>
+        {/* Enhanced Background Elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          {/* Animated spinning gradient */}
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-[50rem] h-[50rem] rounded-full">
+            <div className="absolute inset-0 bg-gradient-to-r from-primary-500/10 to-secondary-500/10 rounded-full blur-3xl mix-blend-overlay animate-spin-slow"></div>
+          </div>
+          
+          {/* Additional animated elements */}
+          <div className="absolute top-1/4 left-1/4 w-4 h-4 bg-primary-400/30 rounded-full animate-pulse-slow"></div>
+          <div className="absolute bottom-1/3 right-1/4 w-6 h-6 bg-secondary-400/20 rounded-full animate-pulse-medium"></div>
+          
+          {/* Animated gradient lines */}
+          <div className="absolute top-0 left-0 w-full h-1/2 overflow-hidden opacity-10">
+            <div className="absolute top-[10%] left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary-400 to-transparent animate-pulse-slow"></div>
+            <div className="absolute top-[30%] left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-secondary-400 to-transparent animate-pulse-medium" style={{ animationDelay: '2s' }}></div>
+            <div className="absolute top-[60%] left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-primary-300 to-transparent animate-pulse-fast" style={{ animationDelay: '1s' }}></div>
+          </div>
+          
+          {/* Radial gradient overlay */}
+          <div className="absolute top-0 right-0 w-full h-full bg-radial-gradient opacity-20"></div>
         </div>
         
         <div className="container mx-auto px-4 py-16 relative z-10 mt-16">
-          <div className="grid lg:grid-cols-2 gap-12 items-center">
-            {/* Text Content */}
+          <div className="grid lg:grid-cols-2 gap-12 items-center">            {/* Text Content */}
             <div className="text-center lg:text-left space-y-8">
               <div className="space-y-4">
-                <h1 className="text-5xl lg:text-7xl font-bold leading-tight">
+                <h1 className="text-5xl lg:text-7xl font-bold leading-tight animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                   Hi, I'm <span className="gradient-text">Ammiel</span>
                 </h1>
-                <h2 className="text-2xl lg:text-3xl text-gray-300 font-light">
+                <h2 className="text-2xl lg:text-3xl text-gray-300 font-light animate-fade-in-up" style={{ animationDelay: '0.4s' }}>
                   Computer Science Student & Developer
                 </h2>
-                <div className="min-h-[80px]"> {/* Fixed height container to prevent layout shift */}
+                <div className="min-h-[80px] animate-fade-in-up" style={{ animationDelay: '0.6s' }}> {/* Fixed height container to prevent layout shift */}
                   <TypeWriter
                     texts={[
                       "Passionate about creating innovative solutions and building meaningful projects. Welcome to my digital portfolio where I showcase my journey in technology and development."
@@ -41,47 +74,51 @@ const Home = () => {
                   />
                 </div>
               </div>
-              
-              {/* CTA Buttons */}
-              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                {/* CTA Buttons */}
+              <div className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start animate-fade-in-up" style={{ animationDelay: '0.8s' }}>
                 <Link 
                   to="/projects" 
-                  className="group btn-primary inline-flex items-center justify-center gap-2"
+                  className="group btn-primary inline-flex items-center justify-center gap-2 relative overflow-hidden"
                 >
-                  View My Work
-                  <FaArrowRight className="transform group-hover:translate-x-1 transition-transform duration-300" />
+                  <span className="relative z-10">View My Work</span>
+                  <FaArrowRight className="transform group-hover:translate-x-1 transition-transform duration-300 relative z-10" />
+                  <div className="absolute inset-0 bg-white opacity-0 group-hover:opacity-10 transition-opacity duration-300"></div>
                 </Link>
                 <Link 
                   to="/contact" 
-                  className="btn-secondary inline-flex items-center justify-center"
+                  className="btn-secondary inline-flex items-center justify-center relative overflow-hidden"
                 >
-                  Get In Touch
+                  <span className="relative z-10">Get In Touch</span>
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-secondary-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                 </Link>
               </div>
               
               {/* Social Links */}
-              <div className="flex gap-4 justify-center lg:justify-start">
+              <div className="flex gap-4 justify-center lg:justify-start animate-fade-in-up" style={{ animationDelay: '1s' }}>
                 <a 
                   href="https://github.com/ammiel" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="w-12 h-12 bg-dark-800 rounded-full flex items-center justify-center text-gray-400 hover:text-primary-400 hover:bg-dark-700 transform hover:scale-110 transition-all duration-300 border border-dark-700 hover:border-primary-500"
+                  className="w-12 h-12 bg-dark-800 rounded-full flex items-center justify-center text-gray-400 hover:text-primary-400 hover:bg-dark-700 transform hover:scale-110 transition-all duration-300 border border-dark-700 hover:border-primary-500 relative overflow-hidden group"
                 >
-                  <FaGithub size={20} />
+                  <FaGithub size={20} className="relative z-10" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-secondary-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                 </a>
                 <a 
                   href="https://linkedin.com/in/ammiel" 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="w-12 h-12 bg-dark-800 rounded-full flex items-center justify-center text-gray-400 hover:text-primary-400 hover:bg-dark-700 transform hover:scale-110 transition-all duration-300 border border-dark-700 hover:border-primary-500"
+                  className="w-12 h-12 bg-dark-800 rounded-full flex items-center justify-center text-gray-400 hover:text-primary-400 hover:bg-dark-700 transform hover:scale-110 transition-all duration-300 border border-dark-700 hover:border-primary-500 relative overflow-hidden group"
                 >
-                  <FaLinkedin size={20} />
+                  <FaLinkedin size={20} className="relative z-10" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-secondary-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                 </a>
                 <a 
                   href="mailto:ammiel@example.com"
-                  className="w-12 h-12 bg-dark-800 rounded-full flex items-center justify-center text-gray-400 hover:text-primary-400 hover:bg-dark-700 transform hover:scale-110 transition-all duration-300 border border-dark-700 hover:border-primary-500"
+                  className="w-12 h-12 bg-dark-800 rounded-full flex items-center justify-center text-gray-400 hover:text-primary-400 hover:bg-dark-700 transform hover:scale-110 transition-all duration-300 border border-dark-700 hover:border-primary-500 relative overflow-hidden group"
                 >
-                  <FaEnvelope size={20} />
+                  <FaEnvelope size={20} className="relative z-10" />
+                  <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-secondary-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
                 </a>
               </div>
             </div>
@@ -109,12 +146,12 @@ const Home = () => {
         >
           <FaChevronDown className="text-primary-400 text-2xl hover:text-primary-300 transition-colors duration-300" />
         </div>
-      </section>
-
-      {/* About Preview Section */}
-      <section id="about-preview" className="py-20 px-4 bg-dark-800/50">
-        <div className="container mx-auto max-w-4xl text-center space-y-12">
-          <div className="space-y-6">
+      </section>      {/* About Preview Section */}
+      <section id="about-preview" className="py-20 px-4 bg-dark-800/50 relative overflow-hidden">
+        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-primary-500 to-transparent opacity-30"></div>
+        
+        <div className="container mx-auto max-w-4xl text-center space-y-12 relative z-10">
+          <div className="space-y-6 scroll-animation">
             <h2 className="text-4xl lg:text-5xl font-bold gradient-text">
               About Me
             </h2>
@@ -126,7 +163,7 @@ const Home = () => {
           </div>
           
           {/* Skills Preview */}
-          <div className="flex flex-wrap justify-center gap-3">
+          <div className="flex flex-wrap justify-center gap-3 scroll-animation">
             {['JavaScript', 'React', 'Node.js', 'Python', 'Git'].map((skill, index) => (
               <span 
                 key={skill}
@@ -138,14 +175,23 @@ const Home = () => {
             ))}
           </div>
           
-          <Link 
-            to="/about" 
-            className="btn-outline inline-flex items-center gap-2 group"
-          >
-            Learn More About Me
-            <FaArrowRight className="transform group-hover:translate-x-1 transition-transform duration-300" />
-          </Link>
+          <div className="scroll-animation">
+            <Link 
+              to="/about" 
+              className="btn-outline inline-flex items-center gap-2 group relative overflow-hidden"
+            >
+              <span className="relative z-10">Learn More About Me</span>
+              <FaArrowRight className="transform group-hover:translate-x-1 transition-transform duration-300 relative z-10" />
+              <div className="absolute inset-0 bg-gradient-to-r from-primary-500 to-secondary-500 opacity-0 group-hover:opacity-20 transition-opacity duration-300"></div>
+            </Link>
+          </div>
+          
+          <div className="gradient-divider mt-16 scroll-animation"></div>
         </div>
+        
+        {/* Decorative elements */}
+        <div className="absolute bottom-10 left-10 w-40 h-40 bg-primary-500/5 rounded-full blur-2xl"></div>
+        <div className="absolute top-10 right-10 w-60 h-60 bg-secondary-500/5 rounded-full blur-2xl"></div>
       </section>
     </div>
   );

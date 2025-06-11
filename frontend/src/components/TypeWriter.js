@@ -2,18 +2,19 @@ import React, { useState, useEffect, useRef } from 'react';
 
 const TypeWriter = ({ 
   texts = [], 
-  speed = 20, // Even faster typing speed for better UX
-  typingDelay = 500, // Shorter delay between paragraphs
+  speed = 20, // Typing speed in milliseconds
+  typingDelay = 500, // Delay between paragraphs in milliseconds
   className = ''
 }) => {
+  // Store texts in a ref to avoid dependency issues
+  const textsRef = useRef(texts);
+  
   // Track which paragraphs have been completed
   const [displayedTexts, setDisplayedTexts] = useState([]);
   // Current paragraph being typed
   const [currentParagraphIndex, setCurrentParagraphIndex] = useState(0);
   // Current text of paragraph being typed
   const [currentText, setCurrentText] = useState('');
-  // Cursor position in current paragraph
-  const [currentCharIndex, setCurrentCharIndex] = useState(0);
   // Is typing completed
   const [isComplete, setIsComplete] = useState(false);
   
@@ -25,36 +26,55 @@ const TypeWriter = ({
       if (timeoutRef.current) clearTimeout(timeoutRef.current);
     };
   }, []);
-
+  
   useEffect(() => {
-    // Do nothing if we have no texts
-    if (texts.length === 0) return;
-    
-    // If we've finished all paragraphs, mark as complete
-    if (currentParagraphIndex >= texts.length) {
-      setIsComplete(true);
-      return;
-    }
-
-    const currentFullText = texts[currentParagraphIndex];
-    
-    // If we haven't finished typing the current paragraph
-    if (currentCharIndex < currentFullText.length) {
-      timeoutRef.current = setTimeout(() => {
-        setCurrentText(prev => prev + currentFullText[currentCharIndex]);
-        setCurrentCharIndex(prevIndex => prevIndex + 1);
-      }, speed);
-    } else {
+    textsRef.current = texts;
+  }, [texts]);
+  
+  useEffect(() => {
+    const typeText = async () => {
+      if (textsRef.current.length === 0) return;
+      
+      // If we've finished all paragraphs, mark as complete
+      if (currentParagraphIndex >= textsRef.current.length) {
+        setIsComplete(true);
+        return;
+      }
+      
+      const currentFullText = textsRef.current[currentParagraphIndex];
+      
+      // Type the current paragraph character by character
+      const typeCharacter = async (index, currentString) => {
+        if (index >= currentFullText.length) {
+          return currentString;
+        }
+        
+        return new Promise(resolve => {
+          timeoutRef.current = setTimeout(() => {
+            const newString = currentString + currentFullText.charAt(index);
+            setCurrentText(newString);
+            resolve(typeCharacter(index + 1, newString));
+          }, speed);
+        });
+      };
+      
+      // Start typing from the beginning
+      await typeCharacter(0, '');
+      
       // Paragraph is complete - add it to displayed texts
-      timeoutRef.current = setTimeout(() => {
-        setDisplayedTexts(prev => [...prev, currentText]);
-        setCurrentText('');
-        setCurrentCharIndex(0);
-        setCurrentParagraphIndex(prev => prev + 1);
-      }, typingDelay);
-    }
-  }, [currentParagraphIndex, currentCharIndex, texts, speed, typingDelay, currentText]);
-
+      await new Promise(resolve => {
+        timeoutRef.current = setTimeout(() => {
+          setDisplayedTexts(prev => [...prev, currentFullText]);
+          setCurrentText('');
+          setCurrentParagraphIndex(prev => prev + 1);
+          resolve();
+        }, typingDelay);
+      });
+    };
+    
+    typeText();
+  }, [currentParagraphIndex, speed, typingDelay]);
+  
   return (
     <div className={className}>
       {/* Display already typed paragraphs */}
