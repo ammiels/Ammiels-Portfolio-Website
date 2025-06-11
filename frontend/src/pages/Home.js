@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { FaGithub, FaLinkedin, FaEnvelope, FaChevronDown, FaArrowRight } from 'react-icons/fa';
+import TypeWriter from '../components/TypeWriter';
 
 const Home = () => {
   const scrollToSection = () => {
@@ -30,11 +31,15 @@ const Home = () => {
                 <h2 className="text-2xl lg:text-3xl text-gray-300 font-light">
                   Computer Science Student & Developer
                 </h2>
-                <p className="text-lg text-gray-400 max-w-2xl leading-relaxed">
-                  Passionate about creating innovative solutions and building 
-                  meaningful projects. Welcome to my digital portfolio where 
-                  I showcase my journey in technology and development.
-                </p>
+                <div className="min-h-[80px]"> {/* Fixed height container to prevent layout shift */}
+                  <TypeWriter
+                    texts={[
+                      "Passionate about creating innovative solutions and building meaningful projects. Welcome to my digital portfolio where I showcase my journey in technology and development."
+                    ]}
+                    speed={15} // Faster typing for better UX
+                    className="text-lg text-gray-400 max-w-2xl leading-relaxed"
+                  />
+                </div>
               </div>
               
               {/* CTA Buttons */}

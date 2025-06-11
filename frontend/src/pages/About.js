@@ -1,5 +1,6 @@
 import React from 'react';
 import { FaCode, FaGraduationCap, FaLightbulb, FaUsers } from 'react-icons/fa';
+import TypeWriter from '../components/TypeWriter';
 
 const About = () => {
   const skills = {
@@ -45,24 +46,17 @@ const About = () => {
           
           <div className="grid lg:grid-cols-3 gap-12 items-start">
             <div className="lg:col-span-2 space-y-6">
-              <p className="text-lg text-gray-300 leading-relaxed">
-                Hello! I'm Ammiel, a passionate Computer Science student with a love for 
-                creating digital solutions that make a difference. My journey in technology 
-                started with curiosity and has evolved into a dedication to building 
-                innovative and user-centered applications.
-              </p>
-              <p className="text-lg text-gray-300 leading-relaxed">
-                I specialize in full-stack development, with experience in modern web 
-                technologies. I enjoy the challenge of solving complex problems and 
-                turning ideas into reality through code. When I'm not coding, you can 
-                find me exploring new technologies, contributing to open-source projects, 
-                or working on personal projects that push my boundaries.
-              </p>
-              <p className="text-lg text-gray-300 leading-relaxed">
-                Currently pursuing my degree in Computer Science, I'm always eager to 
-                learn new skills and collaborate on exciting projects. I believe in 
-                writing clean, efficient code and creating seamless user experiences.
-              </p>
+              <TypeWriter
+                texts={[
+                  "Hello! I'm Ammiel, a passionate Computer Science student with a love for creating digital solutions that make a difference. My journey in technology started with curiosity and has evolved into a dedication to building innovative and user-centered applications.",
+                  "I specialize in full-stack development, with experience in modern web technologies. I enjoy the challenge of solving complex problems and turning ideas into reality through code.",
+                  "Currently pursuing my degree in Computer Science, I'm always eager to learn new skills and collaborate on exciting projects. I believe in writing clean, efficient code and creating seamless user experiences.",
+                  "When I'm not coding, you can find me exploring new technologies, contributing to open-source projects, or working on personal projects that push my boundaries."
+                ]}
+                speed={10}  // Faster typing speed for better user experience
+                typingDelay={500}  // Shorter delay between paragraphs
+                className="text-lg text-gray-300 leading-relaxed"
+              />
             </div>
             
             <div className="flex justify-center lg:justify-end">
