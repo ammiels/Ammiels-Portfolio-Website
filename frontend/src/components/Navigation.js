@@ -59,8 +59,7 @@ const Navigation = () => {
               <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 transform origin-left transition-transform duration-300 ${
                 isActive('/about') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
               }`}></span>
-            </Link>
-            <Link 
+            </Link>            <Link 
               to="/projects" 
               className={`px-3 py-2 text-sm font-medium transition-all duration-300 relative group ${
                 isActive('/projects') 
@@ -72,6 +71,20 @@ const Navigation = () => {
               Projects
               <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 transform origin-left transition-transform duration-300 ${
                 isActive('/projects') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
+              }`}></span>
+            </Link>            
+            <Link 
+              to="/resume" 
+              className={`px-3 py-2 text-sm font-medium transition-all duration-300 relative group ${
+                isActive('/resume') 
+                  ? 'text-primary-400' 
+                  : 'text-gray-300 hover:text-primary-400'
+              }`}
+              onClick={closeMenu}
+            >
+              Resume
+              <span className={`absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-primary-500 to-secondary-500 transform origin-left transition-transform duration-300 ${
+                isActive('/resume') ? 'scale-x-100' : 'scale-x-0 group-hover:scale-x-100'
               }`}></span>
             </Link>
             <Link 
@@ -130,8 +143,7 @@ const Navigation = () => {
             onClick={closeMenu}
           >
             About
-          </Link>
-          <Link 
+          </Link>          <Link 
             to="/projects" 
             className={`block px-3 py-2 text-base font-medium rounded-lg transition-all duration-300 ${
               isActive('/projects') 
@@ -141,6 +153,17 @@ const Navigation = () => {
             onClick={closeMenu}
           >
             Projects
+          </Link>          
+          <Link 
+            to="/resume" 
+            className={`block px-3 py-2 text-base font-medium rounded-lg transition-all duration-300 ${
+              isActive('/resume') 
+                ? 'text-primary-400 bg-dark-700' 
+                : 'text-gray-300 hover:text-primary-400 hover:bg-dark-700'
+            }`}
+            onClick={closeMenu}
+          >
+            Resume
           </Link>
           <Link 
             to="/contact" 

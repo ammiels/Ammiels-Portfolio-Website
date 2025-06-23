@@ -364,3 +364,56 @@
 .perspective-card:hover {
   transform: rotateY(10deg);
 }
+
+/* Print styles for Resume page */
+@media print {
+  nav, 
+  footer,
+  .scroll-animation, 
+  button,
+  .btn-primary,
+  .btn-secondary {
+    display: none !important;
+  }
+  
+  body, html {
+    background-color: white !important;
+    color: black !important;
+  }
+  
+  .card {
+    box-shadow: none !important;
+    border: none !important;
+    background-color: white !important;
+  }
+  
+  .gradient-text {
+    color: black !important;
+    background: none !important;
+    -webkit-text-fill-color: black !important;
+  }
+  
+  iframe {
+    height: 100vh !important;
+    width: 100% !important;
+  }
+  
+  * {
+    color: black !important;
+  }
+  
+  /* Show only essential content */
+  .min-h-screen {
+    min-height: auto !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+  
+  .print-only {
+    display: block !important;
+  }
+  
+  section {
+    page-break-inside: avoid;
+  }
+}
