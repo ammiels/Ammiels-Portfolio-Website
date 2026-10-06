@@ -84,6 +84,32 @@ function ProjectVisual({ project, large = false }) {
   </div>;
 }
 
+const skillMarks = {
+  Java: ["J", "java"],
+  Python: ["Py", "python"],
+  "C / C++": ["C+", "cpp"],
+  SQL: ["DB", "sql"],
+  JavaScript: ["JS", "javascript"],
+  PHP: ["php", "php"],
+  "HTML / CSS": ["</>", "web"],
+  React: ["⚛", "react"],
+  Django: ["dj", "django"],
+  "Node.js": ["N", "node"],
+  "Express.js": ["ex", "express"],
+  "Vue.js": ["V", "vue"],
+  Git: ["◆", "git"],
+  Docker: ["◇", "docker"],
+  "VS Code": ["<>", "vscode"],
+  Linux: ["$_", "linux"],
+  "Azure DevOps": ["Az", "azure"],
+  Leapwork: ["L", "leapwork"]
+};
+
+function SkillMark({ skill }) {
+  const mark = skillMarks[skill];
+  return mark ? <span className={`skill-mark ${mark[1]}`} aria-hidden="true">{mark[0]}</span> : null;
+}
+
 function Home() {
   return <><Header /><main>
     <section className="hero page-section">
@@ -112,7 +138,7 @@ function Home() {
 
     <section id="skills" className="page-section skills-section">
       <SectionHeading number="02" eyebrow="Skills" title="A broad technical toolkit." />
-      <div className="skills-grid">{skillGroups.map(([title, ...skills]) => <div className="skill-group" key={title}><h3>{title}</h3><ul>{skills.map((skill) => <li key={skill}>{skill}</li>)}</ul></div>)}</div>
+      <div className="skills-grid">{skillGroups.map(([title, ...skills]) => <div className="skill-group" key={title}><h3>{title}</h3><ul>{skills.map((skill) => <li key={skill}><SkillMark skill={skill} />{skill}</li>)}</ul></div>)}</div>
       <div className="learning"><div className="eyebrow">Additional learning</div><p>Physical Computing — University of Lancaster · Logic for Computer Science — University of Leeds · IoT — Cisco · Python / Java / HTML / CSS — SoloLearn · Mastercard &amp; EA — Forage</p></div>
     </section>
   </main><Footer /></>;
