@@ -93,13 +93,13 @@ function Home() {
           <h1>Hi, I’m <span>Ammiel</span></h1>
           <p className="hero-role">Computing &amp; Information Technology Graduate</p>
           <p className="hero-intro">I build practical technology solutions across software development, IT systems, cybersecurity and data.</p>
-          <div className="hero-actions"><a className="button button-light" href="/projects" onClick={(e) => { e.preventDefault(); navigate("/projects"); }}>View my work <Arrow /></a><a className="text-link" href="/resume" onClick={(e) => { e.preventDefault(); navigate("/resume"); }}>Download resume <Arrow external /></a></div>
+          <div className="hero-actions"><a className="button button-light" href="/projects" onClick={(e) => { e.preventDefault(); navigate("/projects"); }}>View my work <Arrow /></a><a className="button button-outline" href="/resume" onClick={(e) => { e.preventDefault(); navigate("/resume"); }}>Download resume <Arrow external /></a></div>
           <div className="hero-socials" aria-label="Social links">{contactLinks.map((link) => <a key={link.label} href={link.href} target={link.href.startsWith("http") ? "_blank" : undefined} rel="noreferrer" aria-label={link.label}><BrandIcon label={link.label} /></a>)}</div>
         </div>
         <div className="hero-visual" aria-label="Portrait placeholder">
           <div className="hero-orbit orbit-one" />
           <div className="hero-orbit orbit-two" />
-          <div className="hero-photo">Your photo</div>
+          <div className="hero-photo">My photo</div>
         </div>
       </div>
       <div className="hero-meta"><a className="scroll-arrow" href="#about" aria-label="Scroll to About section">↓</a></div>
