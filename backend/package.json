@@ -1,0 +1,13 @@
+{
+  "name": "ammiels-portfolio-backend",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "ammiels-portfolio-website": "file:..",
+    "express": "^4.21.2"
+  }
+}

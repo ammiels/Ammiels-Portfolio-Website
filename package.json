@@ -1,0 +1,11 @@
+{
+  "name": "ammiels-portfolio-website",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npm --prefix frontend run dev",
+    "build": "npm --prefix frontend run build",
+    "start": "npm --prefix backend start",
+    "install:all": "npm install --prefix frontend && npm install --prefix backend"
+  }
+}
