@@ -24,7 +24,12 @@ function BrandIcon({ label }) {
 function navigate(path) {
   window.history.pushState({}, "", path);
   window.dispatchEvent(new PopStateEvent("popstate"));
-  window.scrollTo({ top: 0, behavior: "smooth" });
+  const hash = path.includes("#") ? path.slice(path.indexOf("#") + 1) : "";
+  if (hash) {
+    window.setTimeout(() => document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" }), 0);
+  } else {
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
 }
 
 function Logo() {
@@ -36,6 +41,15 @@ function Header() {
   const links = [["About", "/#about"], ["Projects", "/projects"], ["Resume", "/resume"], ["Contact", "/contact"]];
   const go = (href) => {
     setOpen(false);
+    if (href.includes("#")) {
+      const [path, hash] = href.split("#");
+      if (window.location.pathname !== path || !document.querySelector(`#${hash}`)) {
+        navigate(href);
+      } else {
+        document.querySelector(`#${hash}`)?.scrollIntoView({ behavior: "smooth" });
+      }
+      return;
+    }
     if (href.startsWith("#")) {
       if (window.location.pathname !== "/") navigate(`/${href}`);
       else document.querySelector(href)?.scrollIntoView({ behavior: "smooth" });
@@ -88,7 +102,7 @@ function Home() {
           <div className="hero-photo">Your photo</div>
         </div>
       </div>
-      <div className="hero-meta"><span>Scroll to explore <Arrow /></span></div>
+      <div className="hero-meta"><a className="scroll-arrow" href="#about" aria-label="Scroll to About section">↓</a></div>
     </section>
 
     <section id="about" className="page-section split-section about-section">
