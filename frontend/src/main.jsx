@@ -89,9 +89,11 @@ const skillMarks = {
   Python: ["Py", "python"],
   "C / C++": ["C+", "cpp"],
   SQL: ["DB", "sql"],
+  PostgreSQL: ["PG", "postgres"],
   JavaScript: ["JS", "javascript"],
   PHP: ["php", "php"],
   "HTML / CSS": ["</>", "web"],
+  CSS: ["CSS", "web"],
   React: ["⚛", "react"],
   Django: ["dj", "django"],
   "Node.js": ["N", "node"],
@@ -102,12 +104,76 @@ const skillMarks = {
   "VS Code": ["<>", "vscode"],
   Linux: ["$_", "linux"],
   "Azure DevOps": ["Az", "azure"],
-  Leapwork: ["L", "leapwork"]
+  Leapwork: ["L", "leapwork"],
+  JWT: ["JWT", "security"],
+  "AI-assisted development": ["AI", "ai"]
 };
 
 function SkillMark({ skill }) {
   const mark = skillMarks[skill];
   return mark ? <span className={`skill-mark ${mark[1]}`} aria-hidden="true">{mark[0]}</span> : null;
+}
+
+const githubUsername = "ammiels";
+
+function relativeTime(date) {
+  const seconds = Math.max(0, Math.floor((Date.now() - new Date(date).getTime()) / 1000));
+  if (seconds < 60) return "just now";
+  const units = [[31536000, "year"], [2592000, "month"], [604800, "week"], [86400, "day"], [3600, "hour"], [60, "minute"]];
+  const unit = units.find(([value]) => seconds >= value) || units[units.length - 1];
+  const count = Math.floor(seconds / unit[0]);
+  return `${count} ${unit[1]}${count === 1 ? "" : "s"} ago`;
+}
+
+function contributionFromEvent(event) {
+  if (event.type === "PullRequestEvent" && event.payload?.pull_request) {
+    return { repo: event.repo.name, message: event.payload.pull_request.title, date: event.created_at, url: event.payload.pull_request.html_url, kind: "Pull request" };
+  }
+  if (event.type === "PushEvent" && event.payload?.commits?.length) {
+    const commit = event.payload.commits[event.payload.commits.length - 1];
+    return { repo: event.repo.name, message: commit.message.split("\n")[0], date: event.created_at, url: `https://github.com/${event.repo.name}/commit/${commit.sha}`, kind: "Commit" };
+  }
+  return null;
+}
+
+function GitHubActivity() {
+  const [state, setState] = useState({ loading: true, error: "", events: [], repositories: [] });
+
+  useEffect(() => {
+    const controller = new AbortController();
+    Promise.all([
+      fetch(`https://api.github.com/users/${githubUsername}/events?per_page=100`, { signal: controller.signal }).then((response) => {
+        if (!response.ok) throw new Error("Unable to load GitHub activity.");
+        return response.json();
+      }),
+      fetch(`https://api.github.com/users/${githubUsername}/repos?sort=updated&per_page=100`, { signal: controller.signal }).then((response) => {
+        if (!response.ok) throw new Error("Unable to load GitHub repositories.");
+        return response.json();
+      })
+    ]).then(([events, repositories]) => {
+      setState({ loading: false, error: "", events, repositories: repositories.filter((repo) => !repo.fork).slice(0, 4) });
+    }).catch((error) => {
+      if (error.name !== "AbortError") setState({ loading: false, error: error.message, events: [], repositories: [] });
+    });
+    return () => controller.abort();
+  }, []);
+
+  if (state.loading) {
+    return <section className="github-activity glass-card" aria-label="Live GitHub activity"><div className="activity-heading"><div><div className="eyebrow">Open source</div><h2>Live GitHub Activity</h2></div><span className="activity-status"><i /> Loading</span></div><div className="activity-skeleton-list"><span /><span /><span /></div></section>;
+  }
+
+  if (state.error) {
+    return <section className="github-activity glass-card" aria-label="Live GitHub activity"><div className="activity-heading"><div><div className="eyebrow">Open source</div><h2>Live GitHub Activity</h2></div></div><p className="activity-message">GitHub activity is temporarily unavailable. <a href={`https://github.com/${githubUsername}`} target="_blank" rel="noreferrer">View profile ↗</a></p></section>;
+  }
+
+  const contributions = state.events.map(contributionFromEvent).filter(Boolean).slice(0, 4);
+  return <section className="github-activity glass-card" aria-label="Live GitHub activity">
+    <div className="activity-heading"><div><div className="eyebrow">Open source</div><h2>Live GitHub Activity</h2></div><a className="activity-profile" href={`https://github.com/${githubUsername}`} target="_blank" rel="noreferrer"><BrandIcon label="GitHub" /> @{githubUsername} <Arrow external /></a></div>
+    <div className="activity-columns">
+      <div><div className="activity-subheading"><span>Recent contributions</span><span className="activity-period">Public events</span></div><div className="contribution-list">{contributions.length ? contributions.map((item, index) => <a className="contribution-item" href={item.url} target="_blank" rel="noreferrer" key={`${item.url}-${index}`}><span className="contribution-kind">{item.kind}</span><strong>{item.message}</strong><span>{item.repo} · {relativeTime(item.date)}</span></a>) : <p className="activity-message">No recent public contributions found.</p>}</div></div>
+      <div><div className="activity-subheading"><span>Public repositories</span><span className="activity-period">Recently updated</span></div><div className="repository-list">{state.repositories.length ? state.repositories.map((repo) => <a className="repository-item" href={repo.html_url} target="_blank" rel="noreferrer" key={repo.id}><span><strong>{repo.name}</strong><small>{repo.description || "Public project"}</small></span><span className="repository-meta"><em>{repo.language || "Code"}</em><span>★ {repo.stargazers_count}</span></span></a>) : <p className="activity-message">No public repositories found.</p>}</div></div>
+    </div>
+  </section>;
 }
 
 function Home() {
@@ -155,11 +221,11 @@ function ProjectPage({ project }) {
       document.removeEventListener("keydown", closeOnEscape);
     };
   }, [isImageOpen]);
-  return <><Header /><main className="detail-page page-section"><button className="back-button" onClick={() => navigate("/projects")}>← Back to projects</button><div className="detail-heading"><div className="eyebrow">{project.number} / CASE STUDY</div><h1>{project.title}</h1><p>{project.description}</p></div><ProjectVisual project={project} large expandable onExpand={() => setIsImageOpen(true)} /><div className="detail-grid"><div><div className="eyebrow">Overview</div>{project.details.map((detail) => <p key={detail}>{detail}</p>)}</div><div><div className="eyebrow">Key features</div><ul className="feature-list">{project.features.map((feature) => <li key={feature}>{feature}<span>↗</span></li>)}</ul><div className="detail-links"><a href={project.github} target="_blank" rel="noreferrer">GitHub <Arrow external /></a></div></div></div><div className="detail-tech"><div className="eyebrow">Built with</div><div className="tag-list">{project.technologies.map((tag) => <span key={tag}>{tag}</span>)}</div></div></main>{isImageOpen && <div className="image-lightbox" role="dialog" aria-modal="true" aria-label={`${project.title} enlarged image`} onClick={() => setIsImageOpen(false)}><div className="lightbox-content" onClick={(event) => event.stopPropagation()}><button className="lightbox-close" type="button" onClick={() => setIsImageOpen(false)} aria-label="Close enlarged image">×</button><img src={project.image} alt={`${project.title} enlarged preview`} /></div></div>}<Footer /></>;
+  return <><Header /><main className="detail-page page-section"><button className="back-button" onClick={() => navigate("/projects")}>← Back to projects</button><div className="detail-heading"><div className="eyebrow">{project.number} / CASE STUDY</div><h1>{project.title}</h1><p>{project.description}</p></div><ProjectVisual project={project} large expandable onExpand={() => setIsImageOpen(true)} /><div className="detail-grid"><div><div className="eyebrow">Overview</div>{project.details.map((detail) => <p key={detail}>{detail}</p>)}</div><div><div className="eyebrow">Key features</div><ul className="feature-list">{project.features.map((feature) => <li key={feature}>{feature}<span>↗</span></li>)}</ul><div className="detail-links"><a href={project.github} target="_blank" rel="noreferrer">GitHub <Arrow external /></a></div></div></div><div className="detail-tech"><div className="eyebrow">Built with</div><div className="tech-list">{project.technologies.map((tag) => <span className="tech-tag" key={tag}><SkillMark skill={tag} />{tag}</span>)}</div></div></main>{isImageOpen && <div className="image-lightbox" role="dialog" aria-modal="true" aria-label={`${project.title} enlarged image`} onClick={() => setIsImageOpen(false)}><div className="lightbox-content" onClick={(event) => event.stopPropagation()}><button className="lightbox-close" type="button" onClick={() => setIsImageOpen(false)} aria-label="Close enlarged image">×</button><img src={project.image} alt={`${project.title} enlarged preview`} /></div></div>}<Footer /></>;
 }
 
 function Projects() {
-  return <><Header /><main className="projects-page page-section"><div className="detail-heading"><div className="eyebrow">Selected work</div><h1>Things I’ve built.</h1><p>A selection of practical projects across development, cybersecurity and data.</p></div><div className="project-list">{projects.map((project) => <article className="project-card" key={project.slug}><ProjectVisual project={project} large /><div className="project-info"><div className="project-number">{project.number}</div><div><p className="project-type">{project.type}</p><h3>{project.title}</h3><p>{project.summary}</p><div className="tag-list">{project.technologies.slice(0, 4).map((tag) => <span key={tag}>{tag}</span>)}</div><button className="inline-button" onClick={() => navigate(`/projects/${project.slug}`)}>View case study <Arrow /></button></div></div></article>)}</div></main><Footer /></>;
+  return <><Header /><main className="projects-page page-section"><div className="detail-heading"><div className="eyebrow">Selected work</div><h1>Things I’ve built.</h1><p>A selection of practical projects across development, cybersecurity and data.</p></div><div className="project-list">{projects.map((project) => <article className="project-card" key={project.slug}><ProjectVisual project={project} large /><div className="project-info"><div className="project-number">{project.number}</div><div><p className="project-type">{project.type}</p><h3>{project.title}</h3><p>{project.summary}</p><div className="tag-list">{project.technologies.slice(0, 4).map((tag) => <span key={tag}>{tag}</span>)}</div><button className="inline-button" onClick={() => navigate(`/projects/${project.slug}`)}>View case study <Arrow /></button></div></div></article>)}</div><GitHubActivity /></main><Footer /></>;
 }
 
 function Contact() {
