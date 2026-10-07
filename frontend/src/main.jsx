@@ -139,7 +139,6 @@ function Home() {
     <section id="skills" className="page-section skills-section">
       <SectionHeading number="02" eyebrow="Skills" title="A broad technical toolkit." />
       <div className="skills-grid">{skillGroups.map(([title, ...skills]) => <div className="skill-group" key={title}><h3>{title}</h3><ul>{skills.map((skill) => <li key={skill}><SkillMark skill={skill} />{skill}</li>)}</ul></div>)}</div>
-      <div className="learning"><div className="eyebrow">Additional learning</div><p>Physical Computing — University of Lancaster · Logic for Computer Science — University of Leeds · IoT — Cisco · Python / Java / HTML / CSS — SoloLearn · Mastercard &amp; EA — Forage</p></div>
     </section>
   </main><Footer /></>;
 }
