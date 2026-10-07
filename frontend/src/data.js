@@ -1,3 +1,5 @@
+import idppImage from "./backgrounds/IDPP.jpg";
+
 export const projects = [
   {
     number: "01",
@@ -9,6 +11,7 @@ export const projects = [
     technologies: ["Python", "React", "Node.js", "Django", "CSS", "AI-assisted development"],
     features: ["Careers URL input", "Job listing extraction", "Hiring signal analysis", "Trend visualisation", "Business intelligence summaries", "Data parsing"],
     accent: "amber",
+    image: idppImage,
     github: "https://github.com/ammiels/account-mapping-website",
     demo: "",
     details: ["Problem: useful recruitment signals were spread across several manual research steps.", "Solution: a repeatable workflow that turns public hiring data into a clear account overview.", "What I learned: good internal tools are as much about reducing cognitive load as they are about adding features."]

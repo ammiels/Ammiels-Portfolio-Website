@@ -75,11 +75,11 @@ function SectionHeading({ number, eyebrow, title, children }) {
   </div>;
 }
 
-function ProjectVisual({ project, large = false }) {
+function ProjectVisual({ project, large = false, expandable = false, onExpand }) {
   return <div className={`project-visual ${project.accent} ${large ? "large" : ""}`}>
+    {project.image && (expandable ? <button className="project-image-trigger" type="button" onClick={onExpand} aria-label={`Expand ${project.title} image`}><img className="project-image" src={project.image} alt={`${project.title} preview`} /></button> : <img className="project-image" src={project.image} alt={`${project.title} preview`} />)}
     <div className="visual-top"><span>{project.number} / SELECTED WORK</span><span>CASE STUDY</span></div>
-    <div className="visual-grid" />
-    <div className="visual-window"><span /><span /><span /></div>
+    {!project.image && <><div className="visual-grid" /><div className="visual-window"><span /><span /><span /></div></>}
     <div className="visual-caption">{project.title}<small>{project.type}</small></div>
   </div>;
 }
@@ -145,7 +145,18 @@ function Home() {
 }
 
 function ProjectPage({ project }) {
-  return <><Header /><main className="detail-page page-section"><button className="back-button" onClick={() => navigate("/projects")}>← Back to projects</button><div className="detail-heading"><div className="eyebrow">{project.number} / CASE STUDY</div><h1>{project.title}</h1><p>{project.description}</p></div><ProjectVisual project={project} large /><div className="detail-grid"><div><div className="eyebrow">Overview</div>{project.details.map((detail) => <p key={detail}>{detail}</p>)}</div><div><div className="eyebrow">Key features</div><ul className="feature-list">{project.features.map((feature) => <li key={feature}>{feature}<span>↗</span></li>)}</ul><div className="detail-links"><a href={project.github} target="_blank" rel="noreferrer">GitHub <Arrow external /></a></div></div></div><div className="detail-tech"><div className="eyebrow">Built with</div><div className="tag-list">{project.technologies.map((tag) => <span key={tag}>{tag}</span>)}</div></div></main><Footer /></>;
+  const [isImageOpen, setIsImageOpen] = useState(false);
+  useEffect(() => {
+    if (!isImageOpen) return undefined;
+    const closeOnEscape = (event) => { if (event.key === "Escape") setIsImageOpen(false); };
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", closeOnEscape);
+    return () => {
+      document.body.style.overflow = "";
+      document.removeEventListener("keydown", closeOnEscape);
+    };
+  }, [isImageOpen]);
+  return <><Header /><main className="detail-page page-section"><button className="back-button" onClick={() => navigate("/projects")}>← Back to projects</button><div className="detail-heading"><div className="eyebrow">{project.number} / CASE STUDY</div><h1>{project.title}</h1><p>{project.description}</p></div><ProjectVisual project={project} large expandable onExpand={() => setIsImageOpen(true)} /><div className="detail-grid"><div><div className="eyebrow">Overview</div>{project.details.map((detail) => <p key={detail}>{detail}</p>)}</div><div><div className="eyebrow">Key features</div><ul className="feature-list">{project.features.map((feature) => <li key={feature}>{feature}<span>↗</span></li>)}</ul><div className="detail-links"><a href={project.github} target="_blank" rel="noreferrer">GitHub <Arrow external /></a></div></div></div><div className="detail-tech"><div className="eyebrow">Built with</div><div className="tag-list">{project.technologies.map((tag) => <span key={tag}>{tag}</span>)}</div></div></main>{isImageOpen && <div className="image-lightbox" role="dialog" aria-modal="true" aria-label={`${project.title} enlarged image`} onClick={() => setIsImageOpen(false)}><div className="lightbox-content" onClick={(event) => event.stopPropagation()}><button className="lightbox-close" type="button" onClick={() => setIsImageOpen(false)} aria-label="Close enlarged image">×</button><img src={project.image} alt={`${project.title} enlarged preview`} /></div></div>}<Footer /></>;
 }
 
 function Projects() {
