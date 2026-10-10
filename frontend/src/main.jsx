@@ -181,7 +181,7 @@ function Home() {
     <section className="hero page-section">
       <div className="hero-content">
         <div className="hero-copy">
-          <div className="hero-kicker"><span className="status-dot" /> Based in Newbury, UK · Available for opportunities</div>
+          <div className="hero-kicker"><span className="status-dot" /> Based in Reading, UK · Available for opportunities</div>
           <h1>Hi, I’m <span>Ammiel</span></h1>
           <p className="hero-role">Computing &amp; Information Technology Graduate</p>
           <p className="hero-intro">I build practical technology solutions across software development, IT systems, cybersecurity and data.</p>
